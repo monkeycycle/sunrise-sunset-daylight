@@ -1,0 +1,21 @@
+---
+title: "`r getOption('startr.title')`"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+author: "`r getOption('startr.author')`"
+output:
+  html_notebook:
+    code_folding: hide
+    df_print: kable
+    self_contained: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+---
+
+## First heading
+
+Text goes here.
+
+```{r}
+# R code goes here
+```
