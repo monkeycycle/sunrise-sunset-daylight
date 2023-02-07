@@ -80,27 +80,32 @@ daylight <- function(lat, lon, place, start_date, span=2, tz="UTC", show_solar_n
   print(paste("daylight_minutes_sunday_next: ", daylight_minutes_sunday_next, sep=""))
   print(paste("daylight_minutes_longer_this_week: ", daylight_minutes_longer_this_week, sep=""))
 
-  minutes_this_week <- hms::hms(minutes = daylight_minutes_longer_this_week * 100)
+  minutes_this_week <- hms::hms(minutes = (daylight_minutes_longer_this_week * 100))
 
   print(paste("minutes_this_week:: ", minutes_this_week, sep=""))
+
+  minutes_this_week_time60 <- minutes_this_week / 60
+
+  print(paste("minutes_this_week_time60: ", minutes_this_week_time60, sep=""))
+
+  this_week_minutes <- dminutes(minutes_this_week_time60)
+
+  print(paste("this_week_minutes: ", this_week_minutes, sep=""))
+
   x_label = ""
 
+
+
+
+
   gg <- ggplot(srss, aes(x=date))
+  gg <- gg + geom_ribbon(aes(ymin=sunrise, ymax=sunset), fill="#FFD301")
 
-
-  gg <- gg + geom_ribbon(aes(ymin=sunrise, ymax=sunset), fill="#FCE205")
-
-  # xif (show_solar_noon) gg <- gg + geom_line(aes(y=solarnoon), color="#fd8d3c")
   # Annotate today
   if (show_now) {
-    gg <- gg + geom_vline(xintercept=as.numeric(as.Date(Sys.time())), color="#2a2714", linetype="dotted", size=0.4)
-    gg <- gg + geom_vline(xintercept=as.numeric(as.Date(Sys.time())), color="#ffffff", linetype="dotted", size=0.8)
+    gg <- gg + geom_vline(xintercept=as.numeric(as.Date(Sys.time())), color="#ffffff", linetype="solid", size=0.5)
+    gg <- gg + geom_vline(xintercept=as.numeric(as.Date(Sys.time())), color="#111111", linetype="dotted", size=0.5)
   }
-
-  # gg <- gg + annotate("text", x = today + 3, y = noon_today, label = paste(format(today, "%B %d"), sep=""), hjust=0, size=5, fontface = "bold", vjust = -1)
-  # gg <- gg + annotate("text", x = today + 3, y = noon_today, label = paste(today_additional_minutes, " minutes of daylight \nmore than yesterday", sep=""), hjust=0, vjust = 1, size=5, lineheight=1)
-
-
 
 
   gg <- gg + scale_x_date(expand=c(0,0),     labels = scales::label_date_short())
@@ -110,16 +115,14 @@ daylight <- function(lat, lon, place, start_date, span=2, tz="UTC", show_solar_n
                                 ) )
   gg <- gg +   ggthemes::theme_few()
   gg <- gg +   theme_waapihk()
-  gg <- gg + theme(panel.background=element_rect(fill="#2a2714"))
+  gg <- gg + theme(panel.background=element_rect(fill="#02198B"))
   gg <- gg + theme(plot.title = ggplot2::element_text(size=20, lineheight=1.2, face="bold", color="#222222", margin=ggplot2::margin(0,0,5,0)))
   gg <- gg + theme(panel.border = ggplot2::element_blank())
 
 
-
   gg1 <- ggplot(srss, aes(x=date, y=day_length))
   gg1 <- gg1 + geom_area(fill="#FFD301", alpha=1) #fffd37
-  # gg1 <- gg1 + geom_line(color="#1497D4", size=2) #fffd37
-  gg1 <- gg1 + geom_line(color="#B0DBF1", size=.5) #fffd37
+  # gg1 <- gg1 + geom_line(color="#B0DBF1", size=1) #fffd37
 
   # Annotate today
   if (show_now) {
@@ -127,8 +130,8 @@ daylight <- function(lat, lon, place, start_date, span=2, tz="UTC", show_solar_n
     gg1 <- gg1 + geom_vline(xintercept=as.numeric(as.Date(Sys.time())), color="#111111", linetype="dotted", size=0.5)
   }
 
-  gg1 <- gg1 + annotate("text", x = today + 5, y = daylight_minutes_today, label = paste(format(today, "%B %d"), sep=""), hjust=0, size=6, fontface = "bold", vjust = 1.5)
-  gg1 <- gg1 + annotate("text", x = today + 5, y = daylight_minutes_today, label = paste("~ ", today_additional_minutes, " minutes of daylight \nmore than yesterday", sep=""), hjust=0, vjust = 2, size=5, lineheight=1)
+  gg1 <- gg1 + annotate("text", x = today + 5, y = daylight_minutes_today, label = paste(format(today, "%B %d"), sep=""), hjust=0, size=5, fontface = "bold", vjust = 1.5)
+  gg1 <- gg1 + annotate("text", x = today + 5, y = daylight_minutes_today, label = paste("~ ", today_additional_minutes, " minutes of daylight \nmore than yesterday", sep=""), hjust=0, vjust = 2, size=4, lineheight=1)
 
   gg1 <- gg1 + scale_x_date(expand=c(0,0),     labels = scales::label_date_short())
   gg1 <- gg1 + scale_y_continuous(labels=pad5, limits=c(0,24), breaks=seq(0, 24, 5), expand=c(0,0))
@@ -152,7 +155,7 @@ daylight <- function(lat, lon, place, start_date, span=2, tz="UTC", show_solar_n
 
   # finalize_plot(gg1)
 
-  # invisible(srss)
+  invisible(srss)
 
 }
 
